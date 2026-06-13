@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Traits\UsesSmartKey;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use UsesSmartKey;
+
+    public $keyPrefix = 'USR';
 
 
     protected $table = 'm_users';
