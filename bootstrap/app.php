@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Daftarkan middleware failover sebagai global middleware
+        $middleware->append(\App\Http\Middleware\DatabaseFailover::class);
+
         $middleware->alias([
             'session.user' => \App\Http\Middleware\EnsureUserSession::class,
             'role.admin' => \App\Http\Middleware\EnsureAdminRole::class,
