@@ -4,75 +4,116 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Kasir - Bebek Mbak Wien')</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#fff8f1', 100: '#ffefdb', 500: '#f97316', 600: '#ea580c', 900: '#7c2d12' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+        }
+    </style>
     @yield('head')
 </head>
-<body class="min-h-screen bg-gray-50 text-gray-900">
-    <div class="min-h-screen flex">
-        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
-            <div class="px-5 py-4 border-b border-gray-200">
-                <div class="text-xs uppercase tracking-[0.2em] text-gray-500">Kasir</div>
-                <div class="mt-1 text-lg font-semibold text-gray-900">Bebek Mbak Wien</div>
-            </div>
+<body class="min-h-screen bg-gray-50 text-gray-800 font-sans selection:bg-brand-100">
 
-            <nav class="flex-1 px-3 py-4 space-y-1 text-sm">
-                <div class="text-xs uppercase text-gray-500 px-2 mb-1">Menu</div>
-                <a href="{{ url('/kasir/dashboard') }}" class="flex items-center gap-2 px-2.5 py-2 rounded-lg {{ request()->is('kasir/dashboard') ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">
-                    <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-sky-500/10 text-[11px] text-sky-700">DB</span>
-                    <span>Dashboard</span>
-                </a>
-                <a href="{{ url('/kasir/transaksi') }}" class="flex items-center gap-2 px-2.5 py-2 rounded-lg {{ request()->is('kasir/transaksi*') ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">
-                    <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-emerald-500/10 text-[11px] text-emerald-700">TR</span>
-                    <span>Transaksi</span>
-                </a>
-                <a href="{{ url('/kasir/riwayat') }}" class="flex items-center gap-2 px-2.5 py-2 rounded-lg {{ request()->is('kasir/riwayat*') ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">
-                    <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-amber-500/10 text-[11px] text-amber-700">RW</span>
-                    <span>Riwayat</span>
-                </a>
-            </nav>
-
-            <div class="px-5 py-4 border-t border-gray-200 text-xs text-gray-500">
-                <div>Kasir: <span class="font-semibold text-gray-900">{{ session('username', '-') }}</span></div>
-                <div>Cabang: <span class="font-semibold text-gray-900">{{ session('branch_name', '#'.session('id_branch')) }}</span></div>
-                <div class="mt-2">
-                    <a href="{{ url('/logout') }}" class="underline text-gray-700">Logout</a>
+    <!-- Top Navbar -->
+    <nav class="no-print sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
+        <div class="px-6 h-16 flex items-center justify-between">
+            <!-- Left: Brand -->
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white font-bold text-sm shadow">
+                    BW
+                </div>
+                <div>
+                    <div class="text-base font-bold text-gray-900 leading-tight">Bebek Mbak Wien</div>
+                    <div class="text-[11px] text-gray-500 leading-tight">POS Kasir</div>
                 </div>
             </div>
-        </aside>
 
-        <main class="flex-1 flex flex-col">
-            <header class="border-b border-gray-200 bg-white">
-                <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div>
-                        <div class="text-xs uppercase tracking-[0.25em] text-gray-500">@yield('section', 'Kasir')</div>
-                        <div class="mt-1 text-2xl font-semibold text-gray-900">@yield('pageTitle', 'POS Bebek Mbak Wien')</div>
-                    </div>
-                    <div class="text-right text-xs text-gray-500">
-                        <div>Cabang aktif</div>
-                        <div class="mt-0.5 text-sm font-medium text-gray-900">{{ session('branch_name', '#'.session('id_branch')) }}</div>
-                    </div>
+            <!-- Center: Navigation -->
+            <div class="hidden md:flex items-center gap-1">
+                @php
+                    $navItems = [
+                        ['url' => '/kasir/dashboard', 'label' => 'Dashboard', 'match' => 'kasir/dashboard'],
+                        ['url' => '/kasir/transaksi', 'label' => 'Transaksi Baru', 'match' => 'kasir/transaksi*'],
+                        ['url' => '/kasir/riwayat', 'label' => 'Riwayat', 'match' => 'kasir/riwayat*'],
+                    ];
+                @endphp
+                @foreach ($navItems as $nav)
+                    @php
+                        $isActive = false;
+                        foreach (explode(',', $nav['match']) as $pattern) {
+                            if (request()->is(trim($pattern))) { $isActive = true; break; }
+                        }
+                    @endphp
+                    <a href="{{ url($nav['url']) }}"
+                       class="px-4 py-2 rounded-lg text-sm font-semibold transition-colors {{ $isActive ? 'bg-brand-500 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                        {{ $nav['label'] }}
+                    </a>
+                @endforeach
+            </div>
+
+            <!-- Right: User & Logout -->
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    <span class="text-sm text-gray-700 font-medium">{{ session('branch_name', 'Cabang #'.session('id_branch')) }}</span>
                 </div>
-            </header>
-
-            <section class="flex-1">
-                <div class="max-w-6xl mx-auto px-6 py-6 space-y-5">
-                    @if (session('success'))
-                        <div class="p-3 rounded-lg border border-green-200 bg-green-50 text-green-800 text-sm">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if (session('error'))
-                        <div class="p-3 rounded-lg border border-red-200 bg-red-50 text-red-800 text-sm">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-
-                    @yield('content')
+                <div class="flex items-center gap-2 border-l border-gray-200 pl-3">
+                    <div class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center font-bold text-sm border border-brand-100">
+                        {{ strtoupper(substr(session('username', 'K'), 0, 1)) }}
+                    </div>
+                    <span class="text-sm font-semibold text-gray-900 hidden lg:inline">{{ session('username', '-') }}</span>
                 </div>
-            </section>
-        </main>
-    </div>
+                <a href="{{ url('/logout') }}" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 border border-red-100 transition-colors">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Page Header -->
+        <div class="mb-6">
+            <p class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-1">@yield('section', 'Kasir')</p>
+            <h1 class="text-2xl font-bold text-gray-900">@yield('pageTitle', 'POS Kasir')</h1>
+        </div>
+
+        @if (session('success'))
+            <div class="mb-6 p-4 rounded-xl border border-green-200 bg-green-50 text-green-800 text-sm flex items-center gap-3">
+                <svg class="w-5 h-5 text-green-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span class="font-medium">{{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="mb-6 p-4 rounded-xl border border-red-200 bg-red-50 text-red-800 text-sm flex items-center gap-3">
+                <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                <span class="font-medium">{{ session('error') }}</span>
+            </div>
+        @endif
+
+        @yield('content')
+    </main>
 
     @yield('scripts')
 </body>

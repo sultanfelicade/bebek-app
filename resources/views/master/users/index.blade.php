@@ -6,13 +6,13 @@
 
 @section('content')
     <div class="flex items-center justify-between gap-4">
-        <div class="text-sm text-slate-400">User admin dan kasir memakai tabel yang sama dengan login.</div>
+        <div class="text-sm text-slate-500">User admin dan kasir memakai tabel yang sama dengan login.</div>
         <a href="{{ url('/master/users/create') }}" class="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950">Tambah User</a>
     </div>
 
-    <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5 overflow-x-auto">
+    <div class="rounded-3xl border border-slate-100 bg-white shadow-sm p-5 overflow-x-auto">
         <table class="min-w-full text-sm">
-            <thead class="text-slate-400">
+            <thead class="text-slate-500">
                 <tr>
                     <th class="py-2 text-left">ID</th>
                     <th class="py-2 text-left">Username</th>
@@ -21,17 +21,17 @@
                     <th class="py-2 text-right">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-800">
+            <tbody class="divide-y divide-slate-100">
                 @forelse ($users as $user)
                     <tr>
-                        <td class="py-3 text-slate-300">{{ $user->id_user }}</td>
-                        <td class="py-3 text-slate-100">{{ $user->username }}</td>
-                        <td class="py-3 text-slate-300">{{ $user->role }}</td>
-                        <td class="py-3 text-slate-300">{{ $user->branch_name ?? '-' }}</td>
-                        <td class="py-3 text-right"><a href="{{ url('/master/users/' . $user->id_user . '/edit') }}" class="text-emerald-300 underline">Edit</a></td>
+                        <td class="py-3 text-slate-500">{{ $user->id_user }}</td>
+                        <td class="py-3 text-slate-900">{{ $user->username }}</td>
+                        <td class="py-3 text-slate-500">{{ $user->role }}</td>
+                        <td class="py-3 text-slate-500">{{ $user->branch_name ?? '-' }}</td>
+                        <td class="py-3 text-right"><a href="{{ url('/master/users/' . $user->id_user . '/edit') }}" class="text-brand-600 underline">Edit</a></td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="py-8 text-center text-slate-400">Belum ada user.</td></tr>
+                    <tr><td colspan="5" class="py-8 text-center text-slate-500">Belum ada user.</td></tr>
                 @endforelse
             </tbody>
         </table>

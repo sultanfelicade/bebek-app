@@ -4,79 +4,107 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Bebek Mbak Wien')</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#fff8f1', 100: '#ffefdb', 500: '#f97316', 600: '#ea580c', 900: '#7c2d12' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+        }
+    </style>
     @yield('head')
 </head>
-<body class="min-h-screen bg-gray-50">
-    <div class="min-h-screen flex">
-        <aside class="hidden md:flex md:w-64 md:flex-col bg-white border-r border-gray-200">
-            <div class="px-4 py-4 border-b border-gray-200">
-                <div class="text-lg font-bold text-gray-900">Bebek Mbak Wien</div>
-                <div class="text-xs text-gray-600">POS Terdistribusi</div>
-            </div>
+<body class="min-h-screen bg-gray-50 text-gray-800 font-sans selection:bg-brand-100">
 
-            <nav class="p-3 space-y-1 text-sm">
-                <a href="{{ url('/kasir') }}" class="block rounded-md px-3 py-2 hover:bg-gray-100 {{ request()->is('kasir') ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-700' }}">Kasir</a>
-
-                @if (session('role') === 'admin')
-                    <div class="pt-2">
-                        <div class="px-3 text-xs font-semibold text-gray-500 uppercase">Master Data</div>
-                        <a href="{{ url('/master/branches') }}" class="mt-1 block rounded-md px-3 py-2 hover:bg-gray-100 {{ request()->is('master/branches*') ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-700' }}">Cabang</a>
-                        <a href="{{ url('/master/categories') }}" class="block rounded-md px-3 py-2 hover:bg-gray-100 {{ request()->is('master/categories*') ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-700' }}">Kategori</a>
-                        <a href="{{ url('/master/products') }}" class="block rounded-md px-3 py-2 hover:bg-gray-100 {{ request()->is('master/products*') ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-700' }}">Menu</a>
-                        <a href="{{ url('/master/users') }}" class="block rounded-md px-3 py-2 hover:bg-gray-100 {{ request()->is('master/users*') ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-700' }}">Pengguna</a>
-                    </div>
-
-                    <div class="pt-2">
-                        <div class="px-3 text-xs font-semibold text-gray-500 uppercase">Inventaris</div>
-                        <a href="{{ url('/inventory') }}" class="mt-1 block rounded-md px-3 py-2 hover:bg-gray-100 {{ request()->is('inventory*') ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-700' }}">Mutasi & Stok</a>
-                    </div>
-
-                    <div class="pt-2">
-                        <div class="px-3 text-xs font-semibold text-gray-500 uppercase">Laporan</div>
-                        <a href="{{ url('/reports') }}" class="mt-1 block rounded-md px-3 py-2 hover:bg-gray-100 {{ request()->is('reports*') ? 'bg-gray-100 font-semibold text-gray-900' : 'text-gray-700' }}">Reporting</a>
-                    </div>
-                @endif
-            </nav>
-
-            <div class="mt-auto p-4 border-t border-gray-200 text-xs text-gray-600">
-                <div>Kasir: <span class="font-semibold text-gray-900">{{ session('username', '-') }}</span></div>
-                <div>Cabang: <span class="font-semibold text-gray-900">{{ session('branch_name', '#'.session('id_branch')) }}</span></div>
-                <div class="mt-2"><a class="underline" href="{{ url('/logout') }}">Logout</a></div>
-            </div>
-        </aside>
-
-        <main class="flex-1">
-            <header class="bg-white border-b border-gray-200">
-                <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-                    <div>
-                        <div class="text-sm text-gray-600">@yield('section', 'POS')</div>
-                        <div class="text-lg font-semibold text-gray-900">@yield('pageTitle', 'Bebek Mbak Wien')</div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-xs text-gray-600">{{ session('branch_name', '#'.session('id_branch')) }}</div>
-                        <div class="text-sm font-semibold text-gray-900">{{ session('username', '-') }}</div>
-                    </div>
+    <!-- Top Navbar -->
+    <nav class="no-print sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
+        <div class="px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white font-bold text-sm shadow">
+                    BW
                 </div>
-            </header>
-
-            <div class="max-w-6xl mx-auto px-4 py-4 space-y-3">
-                @if (session('success'))
-                    <div class="p-3 rounded border border-green-200 bg-green-50 text-green-800 text-sm">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="p-3 rounded border border-red-200 bg-red-50 text-red-800 text-sm">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
-                @yield('content')
+                <div>
+                    <div class="text-base font-bold text-gray-900 leading-tight">Bebek Mbak Wien</div>
+                    <div class="text-[11px] text-gray-500 leading-tight">Sistem Global</div>
+                </div>
             </div>
-        </main>
-    </div>
+
+            <div class="hidden md:flex items-center gap-1">
+                @php
+                    $navItemClass = "px-4 py-2 rounded-lg text-sm font-semibold transition-colors ";
+                    $activeClass = "bg-brand-500 text-white shadow-sm";
+                    $inactiveClass = "text-gray-600 hover:bg-gray-100 hover:text-gray-900";
+                @endphp
+                <a href="{{ url('/kasir') }}" class="{{ $navItemClass }} {{ request()->is('kasir') ? $activeClass : $inactiveClass }}">Akses Kasir</a>
+                @if (session('role') === 'admin')
+                    <a href="{{ url('/master/branches') }}" class="{{ $navItemClass }} {{ request()->is('master/branches*') ? $activeClass : $inactiveClass }}">Cabang</a>
+                    <a href="{{ url('/master/categories') }}" class="{{ $navItemClass }} {{ request()->is('master/categories*') ? $activeClass : $inactiveClass }}">Kategori</a>
+                    <a href="{{ url('/master/products') }}" class="{{ $navItemClass }} {{ request()->is('master/products*') ? $activeClass : $inactiveClass }}">Menu</a>
+                    <a href="{{ url('/master/users') }}" class="{{ $navItemClass }} {{ request()->is('master/users*') ? $activeClass : $inactiveClass }}">Pengguna</a>
+                    <a href="{{ url('/inventory') }}" class="{{ $navItemClass }} {{ request()->is('inventory*') ? $activeClass : $inactiveClass }}">Inventaris</a>
+                    <a href="{{ url('/reports') }}" class="{{ $navItemClass }} {{ request()->is('reports*') ? $activeClass : $inactiveClass }}">Laporan</a>
+                @endif
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    <span class="text-sm text-gray-700 font-medium">{{ session('branch_name', 'Cabang #'.session('id_branch')) }}</span>
+                </div>
+                <div class="flex items-center gap-2 border-l border-gray-200 pl-3">
+                    <div class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center font-bold text-sm border border-brand-100">
+                        {{ strtoupper(substr(session('username', 'U'), 0, 1)) }}
+                    </div>
+                    <span class="text-sm font-semibold text-gray-900 hidden lg:inline">{{ session('username', '-') }}</span>
+                </div>
+                <a href="{{ url('/logout') }}" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 border border-red-100 transition-colors">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <div class="mb-6">
+            <p class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-1">@yield('section', 'Sistem')</p>
+            <h1 class="text-2xl font-bold text-gray-900">@yield('pageTitle', 'Bebek Mbak Wien')</h1>
+        </div>
+
+        @if (session('success'))
+            <div class="mb-6 p-4 rounded-xl border border-green-200 bg-green-50 text-green-800 text-sm flex items-center gap-3">
+                <svg class="w-5 h-5 text-green-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span class="font-medium">{{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="mb-6 p-4 rounded-xl border border-red-200 bg-red-50 text-red-800 text-sm flex items-center gap-3">
+                <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                <span class="font-medium">{{ session('error') }}</span>
+            </div>
+        @endif
+
+        @yield('content')
+    </main>
 
     @yield('scripts')
 </body>
